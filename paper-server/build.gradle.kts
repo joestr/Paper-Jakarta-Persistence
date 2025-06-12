@@ -192,6 +192,9 @@ dependencies {
     // Spark
     implementation("me.lucko:spark-api:0.1-20240720.200737-2")
     implementation("me.lucko:spark-paper:1.10.133-20250413.112336-1")
+
+    // OpenJPA - Jakarta Persistence API
+    implementation("org.apache.openjpa:openjpa-all:4.1.1")
 }
 
 tasks.jar {
