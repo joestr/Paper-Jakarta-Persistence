@@ -44,6 +44,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import net.kyori.adventure.identity.Identity;
+import net.kyori.adventure.pointer.PointersSupplier;
 import net.kyori.adventure.util.TriState;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraft.advancements.AdvancementProgress;
@@ -106,6 +108,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.players.UserWhiteListEntry;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -120,6 +123,8 @@ import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -210,6 +215,12 @@ import org.jspecify.annotations.Nullable;
 
 @DelegateDeserialization(CraftOfflinePlayer.class)
 public class CraftPlayer extends CraftHumanEntity implements Player {
+    private static final PointersSupplier<Player> POINTERS_SUPPLIER = PointersSupplier.<Player>builder()
+        .parent(CraftEntity.POINTERS_SUPPLIER)
+        .resolving(Identity.NAME, Player::getName)
+        .resolving(Identity.DISPLAY_NAME, Player::displayName)
+        .resolving(Identity.LOCALE, Player::locale)
+        .build();
 
     private long firstPlayed = 0;
     private long lastPlayed = 0;
@@ -1530,7 +1541,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public void loadData() {
-        this.server.getHandle().playerIo.load(this.getHandle());
+        this.server.getHandle().playerIo.load(this.getHandle(), ProblemReporter.DISCARDING);
     }
 
     @Override
@@ -1560,7 +1571,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         final ServerPlayer.RespawnConfig respawnConfig = this.getHandle().getRespawnConfig();
         if (respawnConfig == null) return null;
 
-        final ServerLevel world = this.getHandle().server.getLevel(respawnConfig.dimension());
+        final ServerLevel world = this.getHandle().getServer().getLevel(respawnConfig.dimension());
         if (world == null) return null;
 
         if (!loadLocationAndValidate) {
@@ -1885,7 +1896,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
             orb.setPosRaw(handle.getX(), handle.getY(), handle.getZ());
 
             final int possibleDurabilityFromXp = net.minecraft.world.item.enchantment.EnchantmentHelper.modifyDurabilityToRepairFromXp(
-                handle.serverLevel(), itemstack, amount
+                handle.level(), itemstack, amount
             );
             int i = Math.min(possibleDurabilityFromXp, itemstack.getDamageValue());
             final int consumedExperience = i > 0 ? i * amount / possibleDurabilityFromXp : possibleDurabilityFromXp; // Paper - taken from ExperienceOrb#repairPlayerItems + prevent division by 0
@@ -2234,11 +2245,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         ServerGamePacketListenerImpl connection = handle.connection;
 
         // Respawn the player then update their position and selected slot
-        ServerLevel level = handle.serverLevel();
+        ServerLevel level = handle.level();
         connection.send(new net.minecraft.network.protocol.game.ClientboundRespawnPacket(handle.createCommonSpawnInfo(level), net.minecraft.network.protocol.game.ClientboundRespawnPacket.KEEP_ALL_DATA));
         handle.onUpdateAbilities();
         connection.internalTeleport(net.minecraft.world.entity.PositionMoveRotation.of(this.getHandle()), java.util.Collections.emptySet());
-        net.minecraft.server.players.PlayerList playerList = handle.server.getPlayerList();
+        net.minecraft.server.players.PlayerList playerList = handle.getServer().getPlayerList();
         playerList.sendPlayerPermissionLevel(handle, false);
         playerList.sendLevelInfo(handle, level);
         playerList.sendAllPlayerInfo(handle);
@@ -2351,9 +2362,9 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     }
     // Paper end - getLastPlayed replacement API
 
-    public void readExtraData(CompoundTag tag) {
+    public void readExtraData(ValueInput input) {
         this.hasPlayedBefore = true;
-        tag.getCompound("bukkit").ifPresent(data -> {
+        input.child("bukkit").ifPresent(data -> {
             this.firstPlayed = data.getLongOr("firstPlayed", 0);
             this.lastPlayed = data.getLongOr("lastPlayed", 0);
 
@@ -2366,14 +2377,10 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         });
     }
 
-    public void setExtraData(CompoundTag tag) {
+    public void setExtraData(ValueOutput output) {
         this.lastSaveTime = System.currentTimeMillis(); // Paper
 
-        if (!tag.contains("bukkit")) {
-            tag.put("bukkit", new CompoundTag());
-        }
-
-        CompoundTag data = tag.getCompoundOrEmpty("bukkit");
+        ValueOutput data = output.child("bukkit");
         ServerPlayer handle = this.getHandle();
         data.putInt("newExp", handle.newExp);
         data.putInt("newTotalExp", handle.newTotalExp);
@@ -2385,11 +2392,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         data.putString("lastKnownName", handle.getScoreboardName());
 
         // Paper start - persist for use in offline save data
-        if (!tag.contains("Paper")) {
-            tag.put("Paper", new CompoundTag());
-        }
-
-        CompoundTag paper = tag.getCompoundOrEmpty("Paper");
+        ValueOutput paper = output.child("Paper");
         paper.putLong("LastLogin", handle.loginTime);
         paper.putLong("LastSeen", System.currentTimeMillis());
         // Paper end
@@ -3016,7 +3019,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     public void updateCommands() {
         if (this.getHandle().connection == null) return;
 
-        this.getHandle().server.getCommands().sendCommands(this.getHandle());
+        this.getHandle().getServer().getCommands().sendCommands(this.getHandle());
     }
 
     @Override
@@ -3288,17 +3291,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public net.kyori.adventure.pointer.Pointers pointers() {
-        if (this.adventure$pointers == null) {
-            this.adventure$pointers = net.kyori.adventure.pointer.Pointers.builder()
-                .withDynamic(net.kyori.adventure.identity.Identity.DISPLAY_NAME, this::displayName)
-                .withDynamic(net.kyori.adventure.identity.Identity.NAME, this::getName)
-                .withDynamic(net.kyori.adventure.identity.Identity.UUID, this::getUniqueId)
-                .withStatic(net.kyori.adventure.permission.PermissionChecker.POINTER, this::permissionValue)
-                .withDynamic(net.kyori.adventure.identity.Identity.LOCALE, this::locale)
-                .build();
-        }
-
-        return this.adventure$pointers;
+        return POINTERS_SUPPLIER.view(this);
     }
 
     @Override

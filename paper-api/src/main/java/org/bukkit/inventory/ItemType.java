@@ -1,10 +1,13 @@
 package org.bukkit.inventory;
 
 import com.google.common.collect.Multimap;
+import io.papermc.paper.datacomponent.DataComponentType;
+import java.util.Set;
 import java.util.function.Consumer;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.KeyPattern;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.Translatable;
 import org.bukkit.World;
@@ -36,17 +39,14 @@ import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.inventory.meta.SuspiciousStewMeta;
 import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
- * While this API is in a public interface, it is not intended for use by
- * plugins until further notice. The purpose of these types is to make
- * {@link Material} more maintenance friendly, but will in due time be the
- * official replacement for the aforementioned enum. Entirely incompatible
- * changes may occur. Do not use this API in plugins.
+ * Represents an item type.
  */
-@ApiStatus.Experimental // Paper - already required for registry builders
+@NullMarked
 public interface ItemType extends Keyed, Translatable, net.kyori.adventure.translation.Translatable, io.papermc.paper.world.flag.FeatureDependant { // Paper - add Translatable & feature flag API
 
     /**
@@ -54,7 +54,11 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
      * at compile time.
      *
      * @param <M> the generic type of the item meta that represents the item type.
+     * @apiNote Do not use methods exclusive to this interface unless you are
+     * fine with them being possibly removed in the future.
      */
+    @ApiStatus.Experimental
+    @ApiStatus.NonExtendable
     interface Typed<M extends ItemMeta> extends ItemType {
 
         /**
@@ -63,7 +67,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
          * @return the ItemMeta class of this ItemType
          */
         @Override
-        @NotNull
+        @ApiStatus.Experimental
         Class<M> getItemMetaClass();
 
         /**
@@ -73,7 +77,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
          *                         May be null if no intent exists to mutate the item meta at this point.
          * @return the created and configured item stack.
          */
-        @NotNull
+        @ApiStatus.Experimental
         ItemStack createItemStack(@Nullable Consumer<? super M> metaConfigurator);
 
         /**
@@ -84,13 +88,13 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
          *                         May be null if no intent exists to mutate the item meta at this point.
          * @return the created and configured item stack.
          */
-        @NotNull
+        @ApiStatus.Experimental
         ItemStack createItemStack(int amount, @Nullable Consumer<? super M> metaConfigurator);
     }
 
     //<editor-fold desc="ItemTypes" defaultstate="collapsed">
     // Start generate - ItemType
-    // @GeneratedFrom 1.21.5
+    // @GeneratedFrom 1.21.6-pre3
     ItemType.Typed<ItemMeta> ACACIA_BOAT = getItemType("acacia_boat");
 
     ItemType.Typed<ItemMeta> ACACIA_BUTTON = getItemType("acacia_button");
@@ -281,7 +285,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BannerMeta> BLACK_BANNER = getItemType("black_banner");
 
-    ItemType.Typed<ItemMeta> BLACK_BED = getItemType("black_bed");
+    ItemType.Typed<BlockStateMeta> BLACK_BED = getItemType("black_bed");
 
     ItemType.Typed<BundleMeta> BLACK_BUNDLE = getItemType("black_bundle");
 
@@ -296,6 +300,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> BLACK_DYE = getItemType("black_dye");
 
     ItemType.Typed<ItemMeta> BLACK_GLAZED_TERRACOTTA = getItemType("black_glazed_terracotta");
+
+    ItemType.Typed<ItemMeta> BLACK_HARNESS = getItemType("black_harness");
 
     ItemType.Typed<BlockStateMeta> BLACK_SHULKER_BOX = getItemType("black_shulker_box");
 
@@ -327,7 +333,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BannerMeta> BLUE_BANNER = getItemType("blue_banner");
 
-    ItemType.Typed<ItemMeta> BLUE_BED = getItemType("blue_bed");
+    ItemType.Typed<BlockStateMeta> BLUE_BED = getItemType("blue_bed");
 
     ItemType.Typed<BundleMeta> BLUE_BUNDLE = getItemType("blue_bundle");
 
@@ -344,6 +350,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> BLUE_EGG = getItemType("blue_egg");
 
     ItemType.Typed<ItemMeta> BLUE_GLAZED_TERRACOTTA = getItemType("blue_glazed_terracotta");
+
+    ItemType.Typed<ItemMeta> BLUE_HARNESS = getItemType("blue_harness");
 
     ItemType.Typed<ItemMeta> BLUE_ICE = getItemType("blue_ice");
 
@@ -407,7 +415,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BannerMeta> BROWN_BANNER = getItemType("brown_banner");
 
-    ItemType.Typed<ItemMeta> BROWN_BED = getItemType("brown_bed");
+    ItemType.Typed<BlockStateMeta> BROWN_BED = getItemType("brown_bed");
 
     ItemType.Typed<BundleMeta> BROWN_BUNDLE = getItemType("brown_bundle");
 
@@ -424,6 +432,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> BROWN_EGG = getItemType("brown_egg");
 
     ItemType.Typed<ItemMeta> BROWN_GLAZED_TERRACOTTA = getItemType("brown_glazed_terracotta");
+
+    ItemType.Typed<ItemMeta> BROWN_HARNESS = getItemType("brown_harness");
 
     ItemType.Typed<ItemMeta> BROWN_MUSHROOM = getItemType("brown_mushroom");
 
@@ -629,7 +639,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> COMPOSTER = getItemType("composter");
 
-    ItemType.Typed<ItemMeta> CONDUIT = getItemType("conduit");
+    ItemType.Typed<BlockStateMeta> CONDUIT = getItemType("conduit");
 
     ItemType.Typed<ItemMeta> COOKED_BEEF = getItemType("cooked_beef");
 
@@ -741,7 +751,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BannerMeta> CYAN_BANNER = getItemType("cyan_banner");
 
-    ItemType.Typed<ItemMeta> CYAN_BED = getItemType("cyan_bed");
+    ItemType.Typed<BlockStateMeta> CYAN_BED = getItemType("cyan_bed");
 
     ItemType.Typed<BundleMeta> CYAN_BUNDLE = getItemType("cyan_bundle");
 
@@ -756,6 +766,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> CYAN_DYE = getItemType("cyan_dye");
 
     ItemType.Typed<ItemMeta> CYAN_GLAZED_TERRACOTTA = getItemType("cyan_glazed_terracotta");
+
+    ItemType.Typed<ItemMeta> CYAN_HARNESS = getItemType("cyan_harness");
 
     ItemType.Typed<BlockStateMeta> CYAN_SHULKER_BOX = getItemType("cyan_shulker_box");
 
@@ -925,25 +937,15 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> DIRT_PATH = getItemType("dirt_path");
 
-    ItemType.Typed<SpawnEggMeta> DOLPHIN_SPAWN_EGG = getItemType("dolphin_spawn_egg");
-
-    ItemType.Typed<SpawnEggMeta> DONKEY_SPAWN_EGG = getItemType("donkey_spawn_egg");
-
     ItemType.Typed<ItemMeta> DRAGON_BREATH = getItemType("dragon_breath");
 
     ItemType.Typed<SkullMeta> DRAGON_HEAD = getItemType("dragon_head");
-
-    ItemType.Typed<SpawnEggMeta> DROWNED_SPAWN_EGG = getItemType("drowned_spawn_egg");
-
-    ItemType.Typed<SpawnEggMeta> ELDER_GUARDIAN_SPAWN_EGG = getItemType("elder_guardian_spawn_egg");
 
     ItemType.Typed<EnchantmentStorageMeta> ENCHANTED_BOOK = getItemType("enchanted_book");
 
     ItemType.Typed<ItemMeta> END_CRYSTAL = getItemType("end_crystal");
 
     ItemType.Typed<SpawnEggMeta> ENDER_DRAGON_SPAWN_EGG = getItemType("ender_dragon_spawn_egg");
-
-    ItemType.Typed<ItemMeta> ENDER_EYE = getItemType("ender_eye");
 
     ItemType.Typed<SpawnEggMeta> ENDERMAN_SPAWN_EGG = getItemType("enderman_spawn_egg");
 
@@ -953,8 +955,6 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> EXPERIENCE_BOTTLE = getItemType("experience_bottle");
 
-    ItemType.Typed<ItemMeta> FERMENTED_SPIDER_EYE = getItemType("fermented_spider_eye");
-
     ItemType.Typed<ItemMeta> FIRE_CHARGE = getItemType("fire_charge");
 
     ItemType.Typed<FireworkMeta> FIREWORK_ROCKET = getItemType("firework_rocket");
@@ -962,8 +962,6 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<FireworkEffectMeta> FIREWORK_STAR = getItemType("firework_star");
 
     ItemType.Typed<ItemMeta> FLOW_BANNER_PATTERN = getItemType("flow_banner_pattern");
-
-    ItemType.Typed<ItemMeta> FLOWER_BANNER_PATTERN = getItemType("flower_banner_pattern");
 
     ItemType.Typed<ItemMeta> FLOWER_POT = getItemType("flower_pot");
 
@@ -973,17 +971,11 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<SpawnEggMeta> GHAST_SPAWN_EGG = getItemType("ghast_spawn_egg");
 
-    ItemType.Typed<ItemMeta> GLASS_BOTTLE = getItemType("glass_bottle");
-
-    ItemType.Typed<ItemMeta> GLISTERING_MELON_SLICE = getItemType("glistering_melon_slice");
-
     ItemType.Typed<ItemMeta> GLOW_ITEM_FRAME = getItemType("glow_item_frame");
 
     ItemType.Typed<SpawnEggMeta> GLOW_SQUID_SPAWN_EGG = getItemType("glow_squid_spawn_egg");
 
     ItemType.Typed<SpawnEggMeta> GOAT_SPAWN_EGG = getItemType("goat_spawn_egg");
-
-    ItemType.Typed<ItemMeta> GOLD_NUGGET = getItemType("gold_nugget");
 
     ItemType.Typed<ItemMeta> GOLDEN_CARROT = getItemType("golden_carrot");
 
@@ -994,6 +986,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<BannerMeta> GREEN_BANNER = getItemType("green_banner");
 
     ItemType.Typed<SpawnEggMeta> GUARDIAN_SPAWN_EGG = getItemType("guardian_spawn_egg");
+
+    ItemType.Typed<SpawnEggMeta> HAPPY_GHAST_SPAWN_EGG = getItemType("happy_ghast_spawn_egg");
 
     ItemType.Typed<SpawnEggMeta> HOGLIN_SPAWN_EGG = getItemType("hoglin_spawn_egg");
 
@@ -1023,8 +1017,6 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BannerMeta> MAGENTA_BANNER = getItemType("magenta_banner");
 
-    ItemType.Typed<ItemMeta> MAGMA_CREAM = getItemType("magma_cream");
-
     ItemType.Typed<SpawnEggMeta> MAGMA_CUBE_SPAWN_EGG = getItemType("magma_cube_spawn_egg");
 
     ItemType.Typed<ItemMeta> MAP = getItemType("map");
@@ -1039,7 +1031,13 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BlockStateMeta> DISPENSER = getItemType("dispenser");
 
+    ItemType.Typed<SpawnEggMeta> DOLPHIN_SPAWN_EGG = getItemType("dolphin_spawn_egg");
+
+    ItemType.Typed<SpawnEggMeta> DONKEY_SPAWN_EGG = getItemType("donkey_spawn_egg");
+
     ItemType.Typed<ItemMeta> DRAGON_EGG = getItemType("dragon_egg");
+
+    ItemType.Typed<ItemMeta> DRIED_GHAST = getItemType("dried_ghast");
 
     ItemType.Typed<ItemMeta> DRIED_KELP = getItemType("dried_kelp");
 
@@ -1049,11 +1047,15 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BlockStateMeta> DROPPER = getItemType("dropper");
 
+    ItemType.Typed<SpawnEggMeta> DROWNED_SPAWN_EGG = getItemType("drowned_spawn_egg");
+
     ItemType.Typed<ItemMeta> DUNE_ARMOR_TRIM_SMITHING_TEMPLATE = getItemType("dune_armor_trim_smithing_template");
 
     ItemType.Typed<ItemMeta> ECHO_SHARD = getItemType("echo_shard");
 
     ItemType.Typed<ItemMeta> EGG = getItemType("egg");
+
+    ItemType.Typed<SpawnEggMeta> ELDER_GUARDIAN_SPAWN_EGG = getItemType("elder_guardian_spawn_egg");
 
     ItemType.Typed<ItemMeta> ELYTRA = getItemType("elytra");
 
@@ -1083,6 +1085,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BlockStateMeta> ENDER_CHEST = getItemType("ender_chest");
 
+    ItemType.Typed<ItemMeta> ENDER_EYE = getItemType("ender_eye");
+
     ItemType.Typed<ItemMeta> ENDER_PEARL = getItemType("ender_pearl");
 
     ItemType.Typed<ItemMeta> EXPLORER_POTTERY_SHERD = getItemType("explorer_pottery_sherd");
@@ -1111,6 +1115,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> FEATHER = getItemType("feather");
 
+    ItemType.Typed<ItemMeta> FERMENTED_SPIDER_EYE = getItemType("fermented_spider_eye");
+
     ItemType.Typed<ItemMeta> FERN = getItemType("fern");
 
     ItemType.Typed<ItemMeta> FIELD_MASONED_BANNER_PATTERN = getItemType("field_masoned_banner_pattern");
@@ -1137,6 +1143,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> FLOW_POTTERY_SHERD = getItemType("flow_pottery_sherd");
 
+    ItemType.Typed<ItemMeta> FLOWER_BANNER_PATTERN = getItemType("flower_banner_pattern");
+
     ItemType.Typed<ItemMeta> FLOWERING_AZALEA = getItemType("flowering_azalea");
 
     ItemType.Typed<ItemMeta> FLOWERING_AZALEA_LEAVES = getItemType("flowering_azalea_leaves");
@@ -1155,7 +1163,11 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> GLASS = getItemType("glass");
 
+    ItemType.Typed<ItemMeta> GLASS_BOTTLE = getItemType("glass_bottle");
+
     ItemType.Typed<ItemMeta> GLASS_PANE = getItemType("glass_pane");
+
+    ItemType.Typed<ItemMeta> GLISTERING_MELON_SLICE = getItemType("glistering_melon_slice");
 
     ItemType.Typed<ItemMeta> GLOBE_BANNER_PATTERN = getItemType("globe_banner_pattern");
 
@@ -1174,6 +1186,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> GOLD_BLOCK = getItemType("gold_block");
 
     ItemType.Typed<ItemMeta> GOLD_INGOT = getItemType("gold_ingot");
+
+    ItemType.Typed<ItemMeta> GOLD_NUGGET = getItemType("gold_nugget");
 
     ItemType.Typed<ItemMeta> GOLD_ORE = getItemType("gold_ore");
 
@@ -1209,7 +1223,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> GRAVEL = getItemType("gravel");
 
-    ItemType.Typed<ItemMeta> GRAY_BED = getItemType("gray_bed");
+    ItemType.Typed<BlockStateMeta> GRAY_BED = getItemType("gray_bed");
 
     ItemType.Typed<BundleMeta> GRAY_BUNDLE = getItemType("gray_bundle");
 
@@ -1225,6 +1239,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> GRAY_GLAZED_TERRACOTTA = getItemType("gray_glazed_terracotta");
 
+    ItemType.Typed<ItemMeta> GRAY_HARNESS = getItemType("gray_harness");
+
     ItemType.Typed<BlockStateMeta> GRAY_SHULKER_BOX = getItemType("gray_shulker_box");
 
     ItemType.Typed<ItemMeta> GRAY_STAINED_GLASS = getItemType("gray_stained_glass");
@@ -1235,7 +1251,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> GRAY_WOOL = getItemType("gray_wool");
 
-    ItemType.Typed<ItemMeta> GREEN_BED = getItemType("green_bed");
+    ItemType.Typed<BlockStateMeta> GREEN_BED = getItemType("green_bed");
 
     ItemType.Typed<BundleMeta> GREEN_BUNDLE = getItemType("green_bundle");
 
@@ -1250,6 +1266,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> GREEN_DYE = getItemType("green_dye");
 
     ItemType.Typed<ItemMeta> GREEN_GLAZED_TERRACOTTA = getItemType("green_glazed_terracotta");
+
+    ItemType.Typed<ItemMeta> GREEN_HARNESS = getItemType("green_harness");
 
     ItemType.Typed<BlockStateMeta> GREEN_SHULKER_BOX = getItemType("green_shulker_box");
 
@@ -1433,7 +1451,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> LIGHT = getItemType("light");
 
-    ItemType.Typed<ItemMeta> LIGHT_BLUE_BED = getItemType("light_blue_bed");
+    ItemType.Typed<BlockStateMeta> LIGHT_BLUE_BED = getItemType("light_blue_bed");
 
     ItemType.Typed<BundleMeta> LIGHT_BLUE_BUNDLE = getItemType("light_blue_bundle");
 
@@ -1449,6 +1467,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> LIGHT_BLUE_GLAZED_TERRACOTTA = getItemType("light_blue_glazed_terracotta");
 
+    ItemType.Typed<ItemMeta> LIGHT_BLUE_HARNESS = getItemType("light_blue_harness");
+
     ItemType.Typed<BlockStateMeta> LIGHT_BLUE_SHULKER_BOX = getItemType("light_blue_shulker_box");
 
     ItemType.Typed<ItemMeta> LIGHT_BLUE_STAINED_GLASS = getItemType("light_blue_stained_glass");
@@ -1459,7 +1479,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> LIGHT_BLUE_WOOL = getItemType("light_blue_wool");
 
-    ItemType.Typed<ItemMeta> LIGHT_GRAY_BED = getItemType("light_gray_bed");
+    ItemType.Typed<BlockStateMeta> LIGHT_GRAY_BED = getItemType("light_gray_bed");
 
     ItemType.Typed<BundleMeta> LIGHT_GRAY_BUNDLE = getItemType("light_gray_bundle");
 
@@ -1474,6 +1494,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> LIGHT_GRAY_DYE = getItemType("light_gray_dye");
 
     ItemType.Typed<ItemMeta> LIGHT_GRAY_GLAZED_TERRACOTTA = getItemType("light_gray_glazed_terracotta");
+
+    ItemType.Typed<ItemMeta> LIGHT_GRAY_HARNESS = getItemType("light_gray_harness");
 
     ItemType.Typed<BlockStateMeta> LIGHT_GRAY_SHULKER_BOX = getItemType("light_gray_shulker_box");
 
@@ -1495,7 +1517,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> LILY_PAD = getItemType("lily_pad");
 
-    ItemType.Typed<ItemMeta> LIME_BED = getItemType("lime_bed");
+    ItemType.Typed<BlockStateMeta> LIME_BED = getItemType("lime_bed");
 
     ItemType.Typed<BundleMeta> LIME_BUNDLE = getItemType("lime_bundle");
 
@@ -1510,6 +1532,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> LIME_DYE = getItemType("lime_dye");
 
     ItemType.Typed<ItemMeta> LIME_GLAZED_TERRACOTTA = getItemType("lime_glazed_terracotta");
+
+    ItemType.Typed<ItemMeta> LIME_HARNESS = getItemType("lime_harness");
 
     ItemType.Typed<BlockStateMeta> LIME_SHULKER_BOX = getItemType("lime_shulker_box");
 
@@ -1527,7 +1551,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> LOOM = getItemType("loom");
 
-    ItemType.Typed<ItemMeta> MAGENTA_BED = getItemType("magenta_bed");
+    ItemType.Typed<BlockStateMeta> MAGENTA_BED = getItemType("magenta_bed");
 
     ItemType.Typed<BundleMeta> MAGENTA_BUNDLE = getItemType("magenta_bundle");
 
@@ -1543,6 +1567,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> MAGENTA_GLAZED_TERRACOTTA = getItemType("magenta_glazed_terracotta");
 
+    ItemType.Typed<ItemMeta> MAGENTA_HARNESS = getItemType("magenta_harness");
+
     ItemType.Typed<BlockStateMeta> MAGENTA_SHULKER_BOX = getItemType("magenta_shulker_box");
 
     ItemType.Typed<ItemMeta> MAGENTA_STAINED_GLASS = getItemType("magenta_stained_glass");
@@ -1554,6 +1580,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> MAGENTA_WOOL = getItemType("magenta_wool");
 
     ItemType.Typed<ItemMeta> MAGMA_BLOCK = getItemType("magma_block");
+
+    ItemType.Typed<ItemMeta> MAGMA_CREAM = getItemType("magma_cream");
 
     ItemType.Typed<ItemMeta> MANGROVE_BOAT = getItemType("mangrove_boat");
 
@@ -1677,6 +1705,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> MUSIC_DISC_STRAD = getItemType("music_disc_strad");
 
+    ItemType.Typed<ItemMeta> MUSIC_DISC_TEARS = getItemType("music_disc_tears");
+
     ItemType.Typed<ItemMeta> MUSIC_DISC_WAIT = getItemType("music_disc_wait");
 
     ItemType.Typed<ItemMeta> MUSIC_DISC_WARD = getItemType("music_disc_ward");
@@ -1793,7 +1823,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BannerMeta> ORANGE_BANNER = getItemType("orange_banner");
 
-    ItemType.Typed<ItemMeta> ORANGE_BED = getItemType("orange_bed");
+    ItemType.Typed<BlockStateMeta> ORANGE_BED = getItemType("orange_bed");
 
     ItemType.Typed<BundleMeta> ORANGE_BUNDLE = getItemType("orange_bundle");
 
@@ -1808,6 +1838,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> ORANGE_DYE = getItemType("orange_dye");
 
     ItemType.Typed<ItemMeta> ORANGE_GLAZED_TERRACOTTA = getItemType("orange_glazed_terracotta");
+
+    ItemType.Typed<ItemMeta> ORANGE_HARNESS = getItemType("orange_harness");
 
     ItemType.Typed<BlockStateMeta> ORANGE_SHULKER_BOX = getItemType("orange_shulker_box");
 
@@ -1917,7 +1949,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BannerMeta> PINK_BANNER = getItemType("pink_banner");
 
-    ItemType.Typed<ItemMeta> PINK_BED = getItemType("pink_bed");
+    ItemType.Typed<BlockStateMeta> PINK_BED = getItemType("pink_bed");
 
     ItemType.Typed<BundleMeta> PINK_BUNDLE = getItemType("pink_bundle");
 
@@ -1932,6 +1964,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> PINK_DYE = getItemType("pink_dye");
 
     ItemType.Typed<ItemMeta> PINK_GLAZED_TERRACOTTA = getItemType("pink_glazed_terracotta");
+
+    ItemType.Typed<ItemMeta> PINK_HARNESS = getItemType("pink_harness");
 
     ItemType.Typed<ItemMeta> PINK_PETALS = getItemType("pink_petals");
 
@@ -2069,7 +2103,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BannerMeta> PURPLE_BANNER = getItemType("purple_banner");
 
-    ItemType.Typed<ItemMeta> PURPLE_BED = getItemType("purple_bed");
+    ItemType.Typed<BlockStateMeta> PURPLE_BED = getItemType("purple_bed");
 
     ItemType.Typed<BundleMeta> PURPLE_BUNDLE = getItemType("purple_bundle");
 
@@ -2084,6 +2118,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> PURPLE_DYE = getItemType("purple_dye");
 
     ItemType.Typed<ItemMeta> PURPLE_GLAZED_TERRACOTTA = getItemType("purple_glazed_terracotta");
+
+    ItemType.Typed<ItemMeta> PURPLE_HARNESS = getItemType("purple_harness");
 
     ItemType.Typed<BlockStateMeta> PURPLE_SHULKER_BOX = getItemType("purple_shulker_box");
 
@@ -2147,7 +2183,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BannerMeta> RED_BANNER = getItemType("red_banner");
 
-    ItemType.Typed<ItemMeta> RED_BED = getItemType("red_bed");
+    ItemType.Typed<BlockStateMeta> RED_BED = getItemType("red_bed");
 
     ItemType.Typed<BundleMeta> RED_BUNDLE = getItemType("red_bundle");
 
@@ -2162,6 +2198,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> RED_DYE = getItemType("red_dye");
 
     ItemType.Typed<ItemMeta> RED_GLAZED_TERRACOTTA = getItemType("red_glazed_terracotta");
+
+    ItemType.Typed<ItemMeta> RED_HARNESS = getItemType("red_harness");
 
     ItemType.Typed<ItemMeta> RED_MUSHROOM = getItemType("red_mushroom");
 
@@ -2781,7 +2819,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BannerMeta> WHITE_BANNER = getItemType("white_banner");
 
-    ItemType.Typed<ItemMeta> WHITE_BED = getItemType("white_bed");
+    ItemType.Typed<BlockStateMeta> WHITE_BED = getItemType("white_bed");
 
     ItemType.Typed<BundleMeta> WHITE_BUNDLE = getItemType("white_bundle");
 
@@ -2796,6 +2834,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> WHITE_DYE = getItemType("white_dye");
 
     ItemType.Typed<ItemMeta> WHITE_GLAZED_TERRACOTTA = getItemType("white_glazed_terracotta");
+
+    ItemType.Typed<ItemMeta> WHITE_HARNESS = getItemType("white_harness");
 
     ItemType.Typed<BlockStateMeta> WHITE_SHULKER_BOX = getItemType("white_shulker_box");
 
@@ -2845,7 +2885,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<BannerMeta> YELLOW_BANNER = getItemType("yellow_banner");
 
-    ItemType.Typed<ItemMeta> YELLOW_BED = getItemType("yellow_bed");
+    ItemType.Typed<BlockStateMeta> YELLOW_BED = getItemType("yellow_bed");
 
     ItemType.Typed<BundleMeta> YELLOW_BUNDLE = getItemType("yellow_bundle");
 
@@ -2860,6 +2900,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> YELLOW_DYE = getItemType("yellow_dye");
 
     ItemType.Typed<ItemMeta> YELLOW_GLAZED_TERRACOTTA = getItemType("yellow_glazed_terracotta");
+
+    ItemType.Typed<ItemMeta> YELLOW_HARNESS = getItemType("yellow_harness");
 
     ItemType.Typed<BlockStateMeta> YELLOW_SHULKER_BOX = getItemType("yellow_shulker_box");
 
@@ -2885,18 +2927,19 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     // End generate - ItemType
     //</editor-fold>
 
-    @NotNull
-    private static <M extends ItemType> M getItemType(@NotNull String key) {
+    @SuppressWarnings("unchecked")
+    private static <M extends ItemType> M getItemType(@KeyPattern.Value final String key) {
         // Cast instead of using ItemType#typed, since item type can be a mock during testing and would return null
-        return (M) Registry.ITEM.getOrThrow(NamespacedKey.minecraft(key));
+        return (M) Registry.ITEM.getOrThrow(Key.key(Key.MINECRAFT_NAMESPACE, key));
     }
 
     /**
      * Yields this item type as a typed version of itself with a plain {@link ItemMeta} representing it.
      *
      * @return the typed item type.
+     * @apiNote The Typed interface is experimental and may be removed in future versions.
      */
-    @NotNull
+    @ApiStatus.Experimental
     Typed<ItemMeta> typed();
 
     /**
@@ -2905,16 +2948,16 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
      * @param itemMetaType the class type of the {@link ItemMeta} to type this {@link ItemType} with.
      * @param <M> the generic type of the item meta to type this item type with.
      * @return the typed item type.
+     * @apiNote The Typed interface is experimental and may be removed in future versions.
      */
-    @NotNull
-    <M extends ItemMeta> Typed<M> typed(@NotNull Class<M> itemMetaType);
+    @ApiStatus.Experimental
+    <M extends ItemMeta> Typed<M> typed(Class<M> itemMetaType);
 
     /**
      * Constructs a new itemstack with this item type that has the amount 1.
      *
      * @return the constructed item stack.
      */
-    @NotNull
     ItemStack createItemStack();
 
     /**
@@ -2923,7 +2966,6 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
      * @param amount the amount of the item stack.
      * @return the constructed item stack.
      */
-    @NotNull
     ItemStack createItemStack(int amount);
 
     /**
@@ -2938,11 +2980,12 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
      * Returns the corresponding {@link BlockType} for the given ItemType.
      * <p>
      * If there is no corresponding {@link BlockType} an error will be thrown.
+     * <p>This is <b>NOT</b> the same as the {@link BlockType} with the same key,
+     * but instead is the block associated with this item if this item represents a block.</p>
      *
      * @return the corresponding BlockType
      * @see #hasBlockType()
      */
-    @NotNull
     BlockType getBlockType();
 
     /**
@@ -2950,7 +2993,6 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
      *
      * @return the ItemMeta class of this ItemType
      */
-    @NotNull
     Class<? extends ItemMeta> getItemMetaClass();
 
     /**
@@ -2983,8 +3025,17 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
      * Checks if this item type can be used as fuel in a Furnace
      *
      * @return true if this item type can be used as fuel.
+     * @see #getBurnDuration() 
      */
     boolean isFuel();
+
+    /**
+     * Retrieve the item's burn duration in a Furnace
+     * 
+     * @return the burn duration, in ticks or 0 if the item is not fuel
+     * @see #isFuel()
+     */
+    int getBurnDuration();
 
     /**
      * Checks whether this item type is compostable (can be inserted into a
@@ -3017,20 +3068,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
      *
      * @return the item left behind when crafting, or null if nothing is.
      */
-    @Nullable
-    ItemType getCraftingRemainingItem();
+    @Nullable ItemType getCraftingRemainingItem();
 
-//    /**
-//     * Get the best suitable slot for this item type.
-//     *
-//     * For most items this will be {@link EquipmentSlot#HAND}.
-//     *
-//     * @return the best EquipmentSlot for this item type
-//     */
-//    @NotNull
-//    EquipmentSlot getEquipmentSlot();
-
-    // Paper start - improve default item attribute API
     /**
      * Return an immutable copy of all default {@link Attribute}s and their
      * {@link AttributeModifier}s.
@@ -3042,8 +3081,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
      * @return the immutable {@link Multimap} with the respective default
      * Attributes and modifiers, or an empty map if no attributes are set.
      */
-    @NotNull @org.jetbrains.annotations.Unmodifiable Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers();
-    // Paper end - improve default item attribute API
+    @Unmodifiable Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers();
 
     /**
      * Return an immutable copy of all default {@link Attribute}s and their
@@ -3056,8 +3094,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
      * @return the immutable {@link Multimap} with the respective default
      * Attributes and modifiers, or an empty map if no attributes are set.
      */
-    @NotNull
-    Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot slot);
+    @Unmodifiable Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot);
 
     /**
      * Get the {@link CreativeCategory} to which this item type belongs.
@@ -3065,9 +3102,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
      * @return the creative category. null if does not belong to a category
      <!-- * @deprecated use #getCreativeCategories() -->
      */
-    @Nullable
     @Deprecated(since = "1.20.6", forRemoval = true)
-    CreativeCategory getCreativeCategory();
+    @Nullable CreativeCategory getCreativeCategory();
 
     /**
      * Gets if the ItemType is enabled by the features in a world.
@@ -3077,7 +3113,7 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
      * @deprecated use {@link io.papermc.paper.world.flag.FeatureFlagSetHolder#isEnabled(io.papermc.paper.world.flag.FeatureDependant)}
      */
     @Deprecated(forRemoval = true, since = "1.21.1") // Paper
-    boolean isEnabledByFeature(@NotNull World world);
+    boolean isEnabledByFeature(World world);
 
     /**
      * Tries to convert this ItemType into a Material
@@ -3085,38 +3121,33 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
      * @return the converted Material or null
      * @deprecated only for internal use
      */
-    @Nullable
     @Deprecated(since = "1.20.6")
-    Material asMaterial();
+    @Nullable Material asMaterial();
 
-    // Paper start - add Translatable
     /**
      * @deprecated use {@link #translationKey()} and {@link net.kyori.adventure.text.Component#translatable(net.kyori.adventure.translation.Translatable)}
      */
     @Deprecated(forRemoval = true)
     @Override
-    @NotNull String getTranslationKey();
-    // Paper end - add Translatable
+    String getTranslationKey();
 
-    // Paper start - expand ItemRarity API
     /**
      * Returns the item rarity for the item.
      *
      * @return the item rarity (or null if none is set)
      */
     @Nullable ItemRarity getItemRarity();
-    // Paper end - expand ItemRarity API
-    // Paper start - data component API
+
     /**
      * Gets the default value of the data component type for this item type.
      *
      * @param type the data component type
      * @param <T> the value type
      * @return the default value or {@code null} if there is none
-     * @see #hasDefaultData(io.papermc.paper.datacomponent.DataComponentType) for DataComponentType.NonValued
+     * @see #hasDefaultData(DataComponentType) for DataComponentType.NonValued
      */
-    @org.jetbrains.annotations.ApiStatus.Experimental
-    @Nullable <T> T getDefaultData(io.papermc.paper.datacomponent.DataComponentType.@NotNull Valued<T> type);
+    @ApiStatus.Experimental
+    @Nullable <T> T getDefaultData(DataComponentType.Valued<T> type);
 
     /**
      * Checks if the data component type has a default value for this item type.
@@ -3125,14 +3156,13 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
      * @return {@code true} if there is a default value
      */
     @org.jetbrains.annotations.ApiStatus.Experimental
-    boolean hasDefaultData(io.papermc.paper.datacomponent.@NotNull DataComponentType type);
+    boolean hasDefaultData(DataComponentType type);
 
     /**
      * Gets the default data component types for this item type.
      *
      * @return an immutable set of data component types
      */
-    @org.jetbrains.annotations.ApiStatus.Experimental
-    java.util.@org.jetbrains.annotations.Unmodifiable @NotNull Set<io.papermc.paper.datacomponent.DataComponentType> getDefaultDataTypes();
-    // Paper end - data component API
+    @ApiStatus.Experimental
+    @Unmodifiable Set<DataComponentType> getDefaultDataTypes();
 }
