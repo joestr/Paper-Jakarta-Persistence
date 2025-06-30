@@ -193,6 +193,7 @@ dependencies {
     implementation("me.lucko:spark-paper:1.10.133-20250413.112336-1")
 
     // OpenJPA - Jakarta Persistence API
+    implementation("jakarta.persistence:jakarta.persistence-api:3.2.0")
     implementation("org.apache.openjpa:openjpa-all:4.1.1")
 }
 
